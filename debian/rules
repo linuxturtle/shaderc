@@ -1,0 +1,52 @@
+#!/usr/bin/make -f
+# See debhelper(7) (uncomment to enable)
+# output every command that modifies files on the build system.
+export DH_VERBOSE = 1
+
+DPKG_EXPORT_BUILDFLAGS = 1
+include /usr/share/dpkg/default.mk
+
+# see FEATURE AREAS in dpkg-buildflags(1)
+#export DEB_BUILD_MAINT_OPTIONS = hardening=+all
+
+# see ENVIRONMENT in dpkg-buildflags(1)
+# package maintainers to append CFLAGS
+#export DEB_CFLAGS_MAINT_APPEND  = -Wall -pedantic
+# package maintainers to append LDFLAGS
+#export DEB_LDFLAGS_MAINT_APPEND = -Wl,--as-needed
+
+
+%:
+	dh $@ --parallel --with quilt --builddirectory=build/
+
+# Do this manually before building instead.
+#update_sources:
+#	./update_shaderc_sources.py
+#	find src -name .git -exec rm -fr '{}' \; 
+
+override_dh_clean:
+	dh_clean
+	rm -fr build
+
+# dh_make generated override targets
+# This is example for Cmake (See https://bugs.debian.org/641051 )
+override_dh_auto_configure:
+	cd build
+	dh_auto_configure -- \
+	-GNinja \
+	-DCMAKE_BUILD_TYPE=Release \
+	-DCMAKE_INSTALL_LIBDIR=/usr/lib/$(DEB_HOST_MULTIARCH) \
+	-DSKIP_GLSLANG_INSTALL=1 \
+	-DSKIP_SPIRV_TOOLS_INSTALL=1 ../src
+
+override_dh_auto_build:
+	cd build
+	ninja install
+
+gentarball: SOURCE=shaderc
+gentarball: UV=$(shell dpkg-parsechangelog|awk '/^Version:/ {print $$2}'|sed 's/-.*$$//')
+gentarball:
+	tar --transform 's,^,$(SOURCE)-$(UV)/,' \
+		--exclude 'debian' --exclude 'out' \
+		--exclude 'build' --exclude-vcs \
+		-cJf ../$(SOURCE)_$(UV).orig.tar.xz .
