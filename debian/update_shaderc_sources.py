@@ -15,6 +15,8 @@
 # limitations under the License.
 
 """Get source files for Shaderc and its dependencies from public repositories.
+   This is the debian packaging version of the script, which fetches the tarball
+   archives, rather than cloning the whole repository.
 """
 
 from __future__ import print_function
@@ -75,37 +77,19 @@ class GoodCommit(object):
         """Returns the URL for the repository."""
         host = SITE_TO_HOST[self.site]
         sep = '/' if (style is 'https') else ':'
-        return '{style}://{host}{sep}{subrepo}'.format(
+        return '{style}://{host}{sep}{subrepo}{sep}archive{sep}{commit}.tar.gz'.format(
                     style=style,
                     host=host,
                     sep=sep,
-                    subrepo=self.subrepo)
+                    subrepo=self.subrepo,
+		    commit=self.commit)
 
-    def AddRemote(self):
-        """Add the remote 'known-good' if it does not exist."""
-        if len(command_output(['git', 'remote', 'get-url', 'known-good'], self.subdir, fail_ok=True)) == 0:
-            command_output(['git', 'remote', 'add', 'known-good', self.GetUrl()], self.subdir)
-
-    def HasCommit(self):
-        """Check if the repository contains the known-good commit."""
-        return 0 == subprocess.call(['git', 'rev-parse', '--verify', '--quiet',
-                                     self.commit + "^{commit}"],
-                                    cwd=self.subdir)
-
-    def Clone(self):
+    def FetchArchive(self):
         distutils.dir_util.mkpath(self.subdir)
-        command_output(['git', 'clone', self.GetUrl(), '.'], self.subdir)
-
-    def Fetch(self):
-        command_output(['git', 'fetch', 'known-good'], self.subdir)
-
-    def Checkout(self):
-        if not os.path.exists(os.path.join(self.subdir,'.git')):
-            self.Clone()
-        self.AddRemote()
-        if not self.HasCommit():
-            self.Fetch()
-        command_output(['git', 'checkout', self.commit], self.subdir)
+	tarballname = '{name}.tgz'.format(name=self.name)
+        command_output(['wget', self.GetUrl(), '-O', tarballname], self.subdir)
+	command_output(['tar', 'xf', tarballname, '--strip-components=1'], self.subdir)
+        command_output(['rm', tarballname], self.subdir)
 
 
 def GetGoodCommits(known_good_file):
@@ -133,8 +117,11 @@ def main():
     # are created first.
     for c in sorted(commits, cmp=lambda x,y: cmp(x.subdir, y.subdir)):
         print('Get {n}\n'.format(n=c.name))
-        c.Checkout()
+        c.FetchArchive()
+
+    print('Remeber to run "git add -f src", and check that it looks sane')
     sys.exit(0)
+
 
 
 if __name__ == '__main__':
