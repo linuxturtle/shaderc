@@ -45,6 +45,9 @@ override_dh_auto_build:
 override_dh_auto_install:
 	cd debian/build && DESTDIR=${CURDIR}/debian/tmp ninja install
 
+override_dh_install:
+	dh_install --fail-missing
+
 gentarball: SOURCE=shaderc
 gentarball: UV=$(shell dpkg-parsechangelog|awk '/^Version:/ {print $$2}'|sed 's/-.*$$//')
 gentarball:
