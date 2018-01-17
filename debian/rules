@@ -17,31 +17,33 @@ include /usr/share/dpkg/default.mk
 
 
 %:
-	dh $@ --parallel --with quilt --builddirectory=build/
+	dh $@
 
 # Do this manually before building instead.
 #update_sources:
-#	./update_shaderc_sources.py
-#	find src -name .git -exec rm -fr '{}' \; 
+#	./debian/update_shaderc_sources.py
 
 override_dh_clean:
 	dh_clean
-	rm -fr build
+	rm -fr debian/build
 
 # dh_make generated override targets
 # This is example for Cmake (See https://bugs.debian.org/641051 )
 override_dh_auto_configure:
-	cd build
-	dh_auto_configure -- \
+	mkdir -p debian/build
+	cd debian/build && cmake \
 	-GNinja \
 	-DCMAKE_BUILD_TYPE=Release \
+	-DCMAKE_INSTALL_PREFIX=/usr \
 	-DCMAKE_INSTALL_LIBDIR=/usr/lib/$(DEB_HOST_MULTIARCH) \
 	-DSKIP_GLSLANG_INSTALL=1 \
-	-DSKIP_SPIRV_TOOLS_INSTALL=1 ../src
+	-DSKIP_SPIRV_TOOLS_INSTALL=1 ${CURDIR}/src
 
 override_dh_auto_build:
-	cd build
-	ninja install
+	cd debian/build && ninja -v
+
+override_dh_auto_install:
+	cd debian/build && DESTDIR=${CURDIR}/debian/tmp ninja install
 
 gentarball: SOURCE=shaderc
 gentarball: UV=$(shell dpkg-parsechangelog|awk '/^Version:/ {print $$2}'|sed 's/-.*$$//')
