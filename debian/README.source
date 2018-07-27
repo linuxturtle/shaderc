@@ -1,0 +1,10 @@
+Versioning:
+ The upstream repository does not contain any kind of tagging, but it does have
+ a "CHANGES" file which contains pseudo-tags for presumed releases.  So the
+ package versioning scheme is to take that tag, and append a "+<number of git
+ commits since pseudo-tag was created>" to it.  The upstream version scheme
+ appears to append a "-dev" while a release is under development, then remove it
+ once the release is considered "done". So I've replaced the hyphen (-) with a
+ tilde (~), to ensure continuity in debian release progression.
+
+Source Prep:
