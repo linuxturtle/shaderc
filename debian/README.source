@@ -1,10 +1,10 @@
-shaderc for Debian
------------------
+Versioning:
+ The upstream repository does not contain any kind of tagging, but it does have
+ a "CHANGES" file which contains pseudo-tags for presumed releases.  So the
+ package versioning scheme is to take that tag, and append a "+<number of git
+ commits since pseudo-tag was created>" to it.  The upstream version scheme
+ appears to append a "-dev" while a release is under development, then remove it
+ once the release is considered "done". So I've replaced the hyphen (-) with a
+ tilde (~), to ensure continuity in debian release progression.
 
-<this file describes information about the source package, see Debian policy
-manual section 4.14. You WILL either need to modify or delete this file>
-
-
-
- -- Brett Johnson <brett@linuxturtle.net>  Tue, 16 Jan 2018 11:25:30 -0700
-
+Source Prep:
