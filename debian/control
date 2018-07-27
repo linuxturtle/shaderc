@@ -1,0 +1,29 @@
+Source: shaderc
+Section: libdevel
+Priority: optional
+Maintainer: Brett Johnson <brett@linuxturtle.net>
+Build-Depends: debhelper (>=9),
+ cmake,
+ ninja-build,
+ libwayland-dev,
+ libx11-dev,
+ libxcb1-dev,
+ libxrandr-dev,
+ pkg-config,
+ python,
+ python3,
+ python3-lxml,
+ quilt
+Standards-Version: 3.9.8
+Homepage: https://github.com/google/shaderc
+Vcs-Git: https://github.com/linuxturtle/shaderc.git
+Vcs-Browser: https://github.com/linuxturtle/shaderc
+
+Package: shaderc
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: A collection of tools, libraries and tests for shader compilation
+ Shaderc wraps around core functionality in glslang and SPIRV-Tools.
+ At the moment it includes:
+ - glslc, a command line compiler for GLSL/HLSL to SPIR-V, and
+ - libshaderc, a library API for doing the same.
