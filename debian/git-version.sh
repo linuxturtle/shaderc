@@ -4,7 +4,7 @@
 
 # Optional argument: the .git directory to use
 
-CURRENT_BASE="2018.0-dev"
+CURRENT_BASE="2018.0~dev"
 # There are no tags, so manually hardcode commit ID where CURRENT_BASE was created.
 CURRENT_BASE_COMMIT="dbb0f14bcda1fc42a7cd9a3dd8d78d797b2d5448"
 

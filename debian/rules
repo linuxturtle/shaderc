@@ -53,7 +53,7 @@ override_dh_install:
 	dh_install --fail-missing
 
 gentarball: SOURCE=shaderc
-gentarball: UV=$(shell dpkg-parsechangelog|awk '/^Version:/ {print $$2}'|sed 's/-.*$$//')
+gentarball: UV=$(shell dpkg-parsechangelog|awk '/^Version:/ {print $$2}'|sed 's/-[^-]*$$//')
 gentarball:
 	tar --transform 's,^,$(SOURCE)-$(UV)/,' \
 		--exclude 'debian' --exclude 'out' \
