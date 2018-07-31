@@ -1,0 +1,14 @@
+--- a/src/cmake/utils.cmake
++++ b/src/cmake/utils.cmake
+@@ -186,9 +186,9 @@
+       DEPENDS ${all_libs}
+       COMMAND libtool -static -o ${libname} ${lib_target_list})
+   else()
+-    string(REPLACE ";" "> \naddlib $<TARGET_FILE:" temp_string "${all_libs}")
++    string(REPLACE ";" ">' \naddlib '$<TARGET_FILE:" temp_string "${all_libs}")
+     set(start_of_file
+-      "create ${libname}\naddlib $<TARGET_FILE:${temp_string}>")
++      "create '${libname}'\naddlib '$<TARGET_FILE:${temp_string}>'")
+     set(build_script_file "${start_of_file}\nsave\nend\n")
+ 
+     file(GENERATE OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/${new_target}.ar"
