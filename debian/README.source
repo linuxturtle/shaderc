@@ -8,3 +8,17 @@ Versioning:
  tilde (~), to ensure continuity in debian release progression.
 
 Source Prep:
+ Upstream has a "known-good" branch, which only contains files that describe
+ specific git commits of shaderc, as well as other dependencies, so a new
+ release will be based off that branch.  Usually this will be done this way
+ (assuming you have a remote called "google" in your git working directory):
+
+ $ git co upstream-unstable
+ $ git reset --hard google/known-good
+ $ git co -b d-u
+ $ git co debian-unstable -- debian .gitignore
+ $ ./update_shaderc_sources.py
+ $ dch --newversion "$(./debian/git-version.sh ./src/.git)-1"
+ $ find src -name .git | xargs rm -fr
+ $ git add .
+ $ git ci -m "new release"

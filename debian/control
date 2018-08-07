@@ -4,6 +4,7 @@ Priority: optional
 Maintainer: Brett Johnson <brett@linuxturtle.net>
 Build-Depends: debhelper (>=9),
  cmake,
+ binutils,
  ninja-build,
  libwayland-dev,
  libx11-dev,
