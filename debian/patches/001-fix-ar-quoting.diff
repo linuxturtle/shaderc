@@ -1,0 +1,27 @@
+--- a/src/cmake/utils.cmake
++++ b/src/cmake/utils.cmake
+@@ -186,18 +186,18 @@
+       DEPENDS ${all_libs}
+       COMMAND libtool -static -o ${libname} ${lib_target_list})
+   else()
+-    string(REPLACE ";" "> \naddlib $<TARGET_FILE:" temp_string "${all_libs}")
++    string(REPLACE ";" ">\"\)\" \necho \"addlib \$\(realpath --relative-to=\"${CMAKE_CURRENT_BINARY_DIR}\" \"$<TARGET_FILE:" temp_string "${all_libs}")
+     set(start_of_file
+-      "create ${libname}\naddlib $<TARGET_FILE:${temp_string}>")
+-    set(build_script_file "${start_of_file}\nsave\nend\n")
++      "echo \"create \$\(realpath --relative-to=\"${CMAKE_CURRENT_BINARY_DIR}\" \"${libname}\"\)\"\necho \"addlib \$\(realpath --relative-to=\"${CMAKE_CURRENT_BINARY_DIR}\" \"$<TARGET_FILE:${temp_string}>\"\)\"")
++    set(build_script_file "${start_of_file}\necho \"save\"\necho \"end\"\n")
+ 
+-    file(GENERATE OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/${new_target}.ar"
++    file(GENERATE OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/${new_target}.sh"
+         CONTENT ${build_script_file}
+         CONDITION 1)
+ 
+-    add_custom_command(OUTPUT  ${libname}
++    add_custom_command(OUTPUT ${libname}
+       DEPENDS ${all_libs}
+-      COMMAND ${CMAKE_AR} -M < ${new_target}.ar)
++      COMMAND /bin/sh ${new_target}.sh | ${CMAKE_AR} -M)
+   endif()
+ 
+   add_custom_target(${new_target}_genfile ALL
