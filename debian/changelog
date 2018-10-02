@@ -1,8 +1,14 @@
-shaderc (2018.0~dev+20-1) UNRELEASED; urgency=medium
+shaderc (2018.0~dev+35-1) UNRELEASED; urgency=medium
+
+  * Latest upstream version
+
+ -- Brett Johnson <brett@linuxturtle.net>  Mon, 01 Oct 2018 18:52:18 -0600
+
+shaderc (2018.0~dev+20-1) unstable; urgency=medium
 
   * New upstream build (and new versioning scheme)
 
- -- Brett Johnson <brett@linuxturtle.net>  Fri, 27 Jul 2018 14:50:50 -0600
+ -- Brett Johnson <brett@linuxturtle.net>  Mon, 01 Oct 2018 18:52:18 -0600
 
 shaderc (2017.10.27-2) unstable; urgency=medium
 
